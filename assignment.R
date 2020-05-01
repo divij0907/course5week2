@@ -20,7 +20,7 @@ median_per_day
 
 #time series plot
 png("plot2.png")
-plot(unique(recorded$date), mean_per_day,pch=20)
+plot(unique(recorded$date), mean_per_day,pch=20,type="1")
 lines(unique(recorded$date), mean_per_day)
 dev.off()
 
@@ -32,13 +32,23 @@ max
 
 #Imputing Data
 ## replace na by mean of that particular interval 
+sum(is.na(activity$steps))
+activity2<-activity
+activity2[is.na(activity2$steps),"steps"]<-steps_interval[as.character(activity2[is.na(activity2$steps),"interval"])]
 
-recorded[is.na(recorded$steps),"steps"]<-steps_interval[as.character(recorded[is.na(recorded$steps),"interval"])]
+#mean and median steps per day
+mean_per_day<-tapply(activity2$steps,activity2$date,mean)
+mean_per_day<-data.frame(mean_per_day)
+mean_per_day
+median_per_day<-tapply(activity2$steps,activity2$date,median)
+median_per_day<-data.frame(median_per_day)
+median_per_day
+
 
 #Recalculating steps per day histogram
 
 png("plot3.png")
-g<-ggplot(data=recorded,aes(date,steps))+ geom_histogram(stat="identity")
+g<-ggplot(data=activity2,aes(date,steps))+ geom_histogram(stat="identity")
 g+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 dev.off()
 
